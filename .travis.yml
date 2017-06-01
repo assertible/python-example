@@ -33,9 +33,9 @@ after_script:
   # execute the API tests
   - |
     curl -s $TRIGGER_URL -d'{
-      "environment": "\""$TRAVIS_BRANCH-$TRAVIS_JOB_NUMBER"\"",
-      "url": "\""$NGROK_URL"\"",
-      "wait":true
+      "environment": "'"$TRAVIS_BRANCH-$TRAVIS_JOB_NUMBER"'",
+      "url": "'"$NGROK_URL"'",
+      "wait": true
     }'
 
   - kill $APP_PID
