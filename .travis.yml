@@ -26,14 +26,14 @@ after_script:
     # wget ngrok
     ./ngrok http 5000 > /dev/null &
 
-    sleep 4
+    sleep 2
 
     NGROK_URL=$(curl -s localhost:4040/api/tunnels/command_line | jq --raw-output .public_url)
 
     curl -s $TRIGGER_URL -d'{
-    "environment": "my-dynamic-env",
-    "url": "'"$NGROK_URL"'",
-    "wait":true
+      "environment": "my-dynamic-env",
+      "url": "'"$NGROK_URL"'",
+      "wait":true
     }'
 
   - kill $APP_PID
