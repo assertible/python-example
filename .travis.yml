@@ -20,7 +20,7 @@ after_script:
   - |
     set -e
 
-    wget https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-amd64.zip -O ngrok.zip
+    curl https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-amd64.zip > ngrok.zip
     unzip ngrok.zip
 
     # wget ngrok
