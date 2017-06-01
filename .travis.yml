@@ -4,6 +4,9 @@ python:
 
 install: "pip install Flask"
 
+script:
+  - echo "Unit tests"
+
 after_script:
   - |
     python app.py &
