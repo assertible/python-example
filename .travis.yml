@@ -3,3 +3,27 @@ python:
   - "2.7"
 
 install: "pip install Flask"
+
+after_script:
+  - |
+    python app.py &
+    APP_PID=$!
+
+  - |
+    # wget ngrok
+    ngrok http 5000 > /dev/null &
+
+    sleep 2
+
+    NGROK_URL=$(curl -s localhost:4040/api/tunnels/command_line \
+                | jq --raw-output .public_url)
+
+    curl -s $TRIGGER_URL -d'{
+    "environment": "my-dynamic-env",
+    "synchronous": true,
+    "url": "'"$NGROK_URL"'"
+    }'
+
+    pkill ngrok
+
+  - kill $APP_PID
