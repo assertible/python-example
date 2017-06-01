@@ -26,7 +26,7 @@ after_script:
     # wget ngrok
     ./ngrok http 5000 > /dev/null &
 
-    NGROK_URL=$(curl -s 'http://localhost:4040/api/tunnels' | jq -r '.tunnels[1].public_url')
+    NGROK_URL=$(curl -s localhost:4040/api/tunnels/command_line | jq --raw-output .public_url)
 
     curl -s $TRIGGER_URL -d'{
     "environment": "my-dynamic-env",
