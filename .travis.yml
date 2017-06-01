@@ -32,7 +32,8 @@ after_script:
 
     curl -s $TRIGGER_URL -d'{
     "environment": "my-dynamic-env",
-    "url": "'"$NGROK_URL"'"
+    "url": "'"$NGROK_URL"'",
+    "wait":true
     }'
 
   - kill $APP_PID
