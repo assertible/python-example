@@ -10,10 +10,10 @@ creating simple and deterministic tests combined with flexible
 automation.
 
 The setup is 4 steps:
-- 1. [Create a Flask app](1.-create-a-flask-app)
-- 2. [Create a Travis CI config](2.-create-a-travis-ci-config)
-- 3. [Create an Assertible web service](3.-create-an-assertible-web-service)
-- 4. [Copy the trigger URL to a Travis variable](3.-create-an-assertible-web-service)
+1. [Create a Flask app](#1.-create-a-flask-app)
+2. [Create a Travis CI config](#2.-create-a-travis-ci-config)
+3. [Create an Assertible web service](#3.-create-an-assertible-web-service)
+4. [Copy the trigger URL to a Travis variable](#4.-copy-the-trigger-url-to-a-travis-variable)
 
 
 # 1. Create a Flask app
