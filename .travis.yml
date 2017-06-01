@@ -20,7 +20,7 @@ after_script:
   - |
     set -e
 
-    curl https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-amd64.zip > ngrok.zip
+    curl -s https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-amd64.zip > ngrok.zip
     unzip ngrok.zip
 
     # wget ngrok
@@ -32,10 +32,7 @@ after_script:
 
     curl -s $TRIGGER_URL -d'{
     "environment": "my-dynamic-env",
-    "synchronous": true,
     "url": "'"$NGROK_URL"'"
     }'
-
-    pkill ngrok
 
   - kill $APP_PID
