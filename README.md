@@ -1,13 +1,22 @@
 # API integration testing a Python Flask app on Travis CI
 
 This repository contains an example app which
-uses [Assertible](https://assertible.com) to run API integration tests
-for a Python Flask app in a continuous integration build
-using [Travis CI](https://travis-ci.org).
+uses [Assertible](https://assertible.com) to run automated API
+integration tests for a Python Flask app in a continuous integration
+build using [Travis CI](https://travis-ci.org).
 
 Assertible is web service testing tool for developers that focuses on
 creating simple and deterministic tests combined with flexible
 automation.
+
+Basically, [`ngrok`](https://ngrok.com/) is used to create a dynamic
+`localhost` tunnel to your app which is built and run on CI. The
+dynamic `ngrok` URL is passed to
+an
+[**Assertible Trigger**](https://assertible.com/docs/guide/automation#trigger-urls) which
+will run the API tests when executed. This testing technique is not
+specific to Python, Flask, or Travis CI and can be used from any
+continuous integration system or web application framework.
 
 The setup is 4 steps:
 1. [Create a Flask app](#1.-create-a-flask-app)
@@ -15,6 +24,7 @@ The setup is 4 steps:
 3. [Create an Assertible web service](#3.-create-an-assertible-web-service)
 4. [Copy the trigger URL to a Travis variable](#4.-copy-the-trigger-url-to-a-travis-variable)
 
+[**Check out the full blog post**](https://assertible.com/blog/how-to-run-api-integration-tests-on-ci)
 
 # 1. Create a Flask app
 
@@ -73,25 +83,29 @@ script:
   - echo "Unit tests"
 
 after_script:
+
+  # start the web app
   - |
     python app.py &
     APP_PID=$!
 
+  # download and install ngrok
+  - curl -s https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-amd64.zip > ngrok.zip
+  - unzip ngrok.zip
+  - ./ngrok http 5000 > /dev/null &
+
+  # sleep to allow ngrok to initialize
+  - sleep 2
+
+  # extract the ngrok url
+  - NGROK_URL=$(curl -s localhost:4040/api/tunnels/command_line | jq --raw-output .public_url)
+
+  # execute the API tests
   - |
-    set -e
-
-    curl -s https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-amd64.zip > ngrok.zip
-    unzip ngrok.zip
-
-    # wget ngrok
-    ./ngrok http 5000 > /dev/null &
-
-    NGROK_URL=$(curl -s localhost:4040/api/tunnels/command_line | jq --raw-output .public_url)
-
     curl -s $TRIGGER_URL -d'{
-      "environment": "my-dynamic-env",
+      "environment": "'"$TRAVIS_BRANCH-$TRAVIS_JOB_NUMBER"'",
       "url": "'"$NGROK_URL"'",
-      "wait":true
+      "wait": true
     }'
 
   - kill $APP_PID
@@ -99,7 +113,7 @@ after_script:
 
 ```
 git add .travis.yml
-git commit -a -m "Checkin app.py"
+git commit -a -m "Checkin .travis.yml"
 git push
 ```
 
